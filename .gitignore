@@ -1,0 +1,26 @@
+# Direktori dan file yang dihasilkan oleh Go
+bin/
+*.exe
+*.test
+*.out
+*.log
+
+# File yang dihasilkan oleh Go
+go.sum
+vendor/
+
+# Direktori dan file dari IDE
+.idea/
+.vscode/
+*.swp
+
+# File konfigurasi environment
+.env
+.env.docker
+
+# Hasil build
+/build/
+
+# Direktori dan file Docker
+docker/configs/postgres/data/
+docker/configs/init.sql

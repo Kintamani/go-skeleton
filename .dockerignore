@@ -1,0 +1,5 @@
+*/infrastructures/loggers/*
+/.github
+/.git
+/.idea
+/.vscode

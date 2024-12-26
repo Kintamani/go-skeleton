@@ -1,0 +1,17 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Skeleton Project",
+        "description": "A skeleton project for a RESTful API",
+        "version": "1.0.0"
+    },
+    "host": "localhost:8181",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "basePath": "/",
+    "produces": [
+        "application/json"
+    ]
+}

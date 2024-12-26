@@ -1,0 +1,30 @@
+# https://taskfile.dev
+
+version: '3'
+
+dotenv: ['.env']
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  default:
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+  
+  # menjalankan perintah migrate
+  migrate:
+    desc: run migration sql
+    cmds:
+      - migrate -path databases/migrations -database "postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}?sslmode=disable" up
+  # menjalankan perintah create migrate dengan format datetime
+  create-migration-datetime:
+    desc: create migration with datetime
+    cmds:
+      - migrate create -ext sql -dir databases/migrations {{.name}}
+  # menjalankan perintah create migrate dengan format sequence
+  create-migration-sequence:
+    desc: create migration with sequence number
+    cmds:
+      -  migrate create -ext sql -dir databases/migrations -seq {{.name}}
