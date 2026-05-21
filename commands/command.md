@@ -1,12 +1,16 @@
-Pindah ke direktori myapp/.
+Dokumen ini sementara dipertahankan sebagai placeholder.
 
-Jalankan perintah go build untuk command tertentu:
+Struktur aplikasi telah dipindahkan ke pendekatan `cmd/` dan `internal/` agar lebih dekat dengan clean architecture. Jika nanti command generator ingin dihidupkan lagi, sebaiknya gunakan pola berikut:
 
-```bash
-go build -o myapp-makefile cmd/makefile.go
+```text
+cmd/
+  cli/
+internal/
+  delivery/cli/
 ```
-Ini akan menghasilkan binary bernama myapp-makefile. Anda bisa menjalankannya seperti aplikasi biasa:
-```bash
-./myapp-makefile make:file MyNewFile
-```
-Dengan menjalankan perintah ini, file binary akan mengeksekusi command make:file dan menghasilkan file Go baru sesuai dengan nama yang Anda berikan (MyNewFile.go).
+
+Dengan pola itu:
+
+- `cmd/cli` menjadi entry point command line
+- `internal/delivery/cli` berisi definisi command Cobra
+- business logic tetap dipanggil melalui `usecase`, bukan langsung dari command

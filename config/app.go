@@ -13,10 +13,10 @@ var (
 
 type Config struct {
 	App struct {
-		Name  string `env:"APP_NAME" envDefault:"skeleton"`
-		Port  string `env:"APP_PORT" envDefault:"8181"`
-		Host  string `env:"APP_HOST" envDefault:"127.0.0.1"`
-		Stage string `env:"APP_STAGE" envDefault:"development"`
+		Name        string `env:"APP_NAME" env-default:"skeleton"`
+		Port        string `env:"APP_PORT" env-default:"8181"`
+		Host        string `env:"APP_HOST" env-default:"127.0.0.1"`
+		Environment string `env:"APP_ENV" env-default:"development"`
 	}
 
 	DB struct {

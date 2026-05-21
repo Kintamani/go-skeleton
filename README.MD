@@ -12,7 +12,6 @@ Struktur proyek ini masih berupa skeleton yang terus disederhanakan dan dirapika
 - Echo
 - PostgreSQL
 - SQLX
-- Cobra
 - Logrus
 - Docker Compose
 
@@ -20,10 +19,8 @@ Struktur proyek ini masih berupa skeleton yang terus disederhanakan dan dirapika
 
 ```text
 .
-├── adapters/              # Adapter untuk framework, logger, validator, database, dan CLI
-├── api/                   # Routing dan response HTTP
-├── bootstrap/             # Wiring aplikasi saat startup
-├── commands/              # Eksperimen/generator command berbasis Cobra
+├── cmd/
+│   └── web/               # Entry point aplikasi HTTP
 ├── config/                # Loader environment dan konfigurasi aplikasi
 ├── databases/
 │   ├── migrations/        # File migration SQL
@@ -32,9 +29,15 @@ Struktur proyek ini masih berupa skeleton yang terus disederhanakan dan dirapika
 │   └── configs/           # Dockerfile untuk Go app dan PostgreSQL
 ├── docs/
 │   └── swagger/           # Dokumen Swagger/OpenAPI dasar
-├── domains/               # Domain dan placeholder entitas bisnis
+├── internal/
+│   ├── app/               # Wiring dependency aplikasi
+│   ├── delivery/          # Delivery layer, route, handler, HTTP response
+│   ├── entity/            # Entity domain
+│   ├── infrastructure/    # Implementasi framework, DB, logger, repository
+│   ├── model/             # DTO untuk output/input use case
+│   ├── repository/        # Kontrak repository
+│   └── usecase/           # Business use case
 ├── hotreload/             # Output binary hot reload
-├── main.go                # Entry point aplikasi HTTP
 ├── docker-compose.yml
 └── taskfile.yml           # Shortcut task untuk migration
 ```
@@ -43,15 +46,18 @@ Struktur proyek ini masih berupa skeleton yang terus disederhanakan dan dirapika
 
 Alur request saat ini sederhana:
 
-1. `main.go` memuat environment, logger, validator, Echo, dan database.
-2. `bootstrap/app.go` melakukan wiring dependency aplikasi.
-3. `api/routes/api.go` mendaftarkan route.
-4. Response error diformat oleh `api/responses/app.go`.
+1. `cmd/web/main.go` memuat environment dan menjalankan aplikasi.
+2. `internal/app/web.go` melakukan wiring dependency aplikasi.
+3. `internal/delivery/http/route/route.go` mendaftarkan route.
+4. Handler memanggil use case.
+5. Use case memanggil repository interface.
+6. Implementasi repository ada di layer `internal/infrastructure`.
 
 Endpoint bawaan yang tersedia saat ini:
 
 ```http
 GET /api/v1/ping
+GET /api/v1/examples
 ```
 
 Response:
@@ -128,12 +134,19 @@ go test ./...
 
 ## Catatan Arsitektur
 
-Kalau dibandingkan dengan referensi seperti `khannedy/golang-clean-architecture`, repo itu lebih tegas dalam memisahkan delivery, use case, repository, dan gateway. Arah itu bagus, tetapi untuk repo ini lebih aman dilakukan bertahap:
+Struktur repo ini sekarang sudah lebih dekat dengan referensi `khannedy/golang-clean-architecture`:
 
-- pertahankan folder yang sudah aktif dipakai
-- rapikan naming agar konsisten
-- pisahkan use case dan infrastructure saat kebutuhan bisnis mulai nyata
-- hindari menambahkan banyak folder kosong hanya demi terlihat "clean architecture"
+- entry point dipindah ke `cmd/`
+- business flow dipusatkan ke `internal/usecase`
+- kontrak repository dipisah dari implementasinya
+- HTTP handler hanya menangani delivery concern
+- implementasi DB, logger, dan HTTP server ada di `internal/infrastructure`
+
+Masih ada ruang pengembangan, misalnya:
+
+- menambah request/response model per fitur yang lebih lengkap
+- memisahkan transaction boundary bila use case bertambah kompleks
+- menambah unit test di layer use case dan repository
 
 ## Commit Convention
 

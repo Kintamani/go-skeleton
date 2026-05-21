@@ -6,8 +6,8 @@ bin/
 *.log
 
 # File yang dihasilkan oleh Go
-go.sum
 vendor/
+.cache/
 
 # Direktori dan file dari IDE
 .idea/

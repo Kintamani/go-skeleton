@@ -11,6 +11,24 @@
         "https"
     ],
     "basePath": "/",
+    "paths": {
+        "/api/v1/ping": {
+            "get": {
+                "summary": "Health check endpoint",
+                "produces": [
+                    "application/json"
+                ]
+            }
+        },
+        "/api/v1/examples": {
+            "get": {
+                "summary": "Get example list",
+                "produces": [
+                    "application/json"
+                ]
+            }
+        }
+    },
     "produces": [
         "application/json"
     ]
