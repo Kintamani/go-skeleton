@@ -1,128 +1,151 @@
-# Skeleton Project Go 
+# Go Skeleton
 
-> **_NOTE:_**  Project ini akan selalu di-update, seiring dengan perubahan teknologi dan arsitektur untuk memudahkan pengembangan aplikasi saya pribadi.
+Skeleton project Go untuk membangun REST API dengan struktur yang mengarah ke **Clean Architecture**. Repo ini sudah menyiapkan fondasi dasar: HTTP server dengan Echo, konfigurasi environment, koneksi PostgreSQL, migration, seeder, logging, dan Docker untuk development.
 
-Ini adalah skeleton project Golang yang dirancang dengan prinsip **Clean Architecture** untuk mendukung skalabilitas dan maintainability. Proyek ini juga sudah dilengkapi dengan Docker untuk mempermudah development.
+## Status
+
+Struktur proyek ini masih berupa skeleton yang terus disederhanakan dan dirapikan. Boundary antar layer sudah mulai dibentuk, tetapi belum selengkap implementasi clean architecture yang matang. Karena itu, dokumentasi ini dibuat untuk mencerminkan kondisi repo saat ini, bukan struktur ideal yang belum sepenuhnya ada.
+
+## Tech Stack
+
+- Go `1.22+`
+- Echo
+- PostgreSQL
+- SQLX
+- Cobra
+- Logrus
+- Docker Compose
 
 ## Struktur Proyek
 
-```plaintext
-├── adapters/               # Adapters untuk menghubungkan framework dengan infrastructure
-├── api/
-│   ├── handlers/           # HTTP Handlers untuk routing
-│   ├── middlewares/        # Middlewares untuk memproses request
-│   ├── requests/           # DTO untuk payload request
-│   ├── responses/          # DTO untuk payload response
-│   └── routes/             # Definisi URL routes
-│       └── router.go       # File utama untuk mengatur routing
-├── bootstrap/              # Bootstrap untuk mengatur konfigurasi
-│       ├── app.go          # Bootstrap untuk mengatur konfigurasi aplikasi
-│       └── ...
-├── commands/               # Command untuk menjalankan aplikasi
-├── configs/
-│   ├── config.go           # File konfigurasi aplikasi
-│   └── db.go               # Setup untuk database
+```text
+.
+├── adapters/              # Adapter untuk framework, logger, validator, database, dan CLI
+├── api/                   # Routing dan response HTTP
+├── bootstrap/             # Wiring aplikasi saat startup
+├── commands/              # Eksperimen/generator command berbasis Cobra
+├── config/                # Loader environment dan konfigurasi aplikasi
 ├── databases/
-│   ├── migrations/         # Migrations untuk database
-│   └── seeders/            # Seeder untuk database
-├── docker/                 # File konfigurasi Docker
-│   └── configs/
-│       ├── app/            # Configurasi docker untuk aplikasi
-│       ├── db/             # Configurasi docker untuk database
-│       ├── echo/           # Configurasi docker untuk echo
-│       ├── env/            # Configurasi docker untuk env
-│       ├── log/            # Configurasi docker untuk log
-│       ├── validation/     # Configurasi docker untuk validation
-│       └── ...
-├── docs/                   # Dokumentasi API atau dokumentasi proyek
-├── domains/                # Layer bisnis utama
-│   └── example/            # Entity dan interfaces example
-├── hotreload/              # Direktori untuk output dari build Air hot reload
-│   ├── logs/               # Log output dari build Air hot reload
-│   └── main                # Binary hasil build
-├── infrastructures/        # Infrastruktur seperti repository dan external services
-│   ├── persistences/       # Implementasi repository (DB)
-│   ├── externals/          # Komunikasi dengan layanan eksternal
-│   └── loggers/            # Utilities untuk logging
-├── interfaces/             # Interface adapters (controllers)
-│   ├── controllers/        # Menghubungkan handler ke services
-│   └── presenters/         # Mengelola output data (misal JSON)
-│       ├── requests/       # Megelola request dari service `JSON`
-│       └── responses/      # Mengelola response dari service `JSON`
-├── tests/                  # Direktori untuk unit dan integration tests
-├── usecases/               # Use case untuk logika bisnis
-├── .ait.toml               # Configurasi Air (hot reload)
-├── .dockerignore           # File untuk mengabaikan file dalam build Docker
-├── .env                    # Environment variables
-├── .env.example            # Environment variables
-├── .gitignore              # File untuk mengabaikan file push ke repository
-├── docker-compose.yml      # Konfigurasi Docker Compose
-├── go.mod                  # File Go module
-├── go.sum                  # Dependency checksum
-├── LICENCE                 # Lesensi MIT
-├── main.go                 # Entry point aplikasi
-└── README.md               # Dokumentasi proyek
-
+│   ├── migrations/        # File migration SQL
+│   └── seeders/           # Seeder database
+├── docker/
+│   └── configs/           # Dockerfile untuk Go app dan PostgreSQL
+├── docs/
+│   └── swagger/           # Dokumen Swagger/OpenAPI dasar
+├── domains/               # Domain dan placeholder entitas bisnis
+├── hotreload/             # Output binary hot reload
+├── main.go                # Entry point aplikasi HTTP
+├── docker-compose.yml
+└── taskfile.yml           # Shortcut task untuk migration
 ```
 
-### Persyaratan
-- **Golang** (minimal versi 1.23)
-- **Docker** dan **Docker Compose**
-- **PostgreSQL** sebagai database (dapat dikustomisasi)
+## Alur Aplikasi
 
-### Setup Proyek
-1. Clone repository ini:
-    ```bash
-    git clone https://github.com/Kintamani/go-skeleton
-    cd skeleton-project
-    ```
+Alur request saat ini sederhana:
 
-2. Install dependencies menggunakan Go:
-    ```bash
-     go mod download
-    ```
+1. `main.go` memuat environment, logger, validator, Echo, dan database.
+2. `bootstrap/app.go` melakukan wiring dependency aplikasi.
+3. `api/routes/api.go` mendaftarkan route.
+4. Response error diformat oleh `api/responses/app.go`.
 
-3. Atur environment variables: Buat file `.env` dari hasil `.env.example` dan isi dengan konfigurasi yang dibutuhkan.
+Endpoint bawaan yang tersedia saat ini:
 
-4. Build dan Jalankan aplikasi dengan Docker:
-    ```bash
-    docker compose up --build
-    ```
-    Aplikasi akan berjalan di http://localhost:8080.
+```http
+GET /api/v1/ping
+```
 
-5. Struktur Direktorinya mengikuti Clean Architecture:
-    - **Domain**: Berisi entitas dan logika bisnis utama.
-    - **Infrastructure**: Mengelola persistence dan layanan eksternal.
-    - **Usecase**: Berisi skenario bisnis atau use case.
-    - **API**: Mengelola handler dan middleware untuk HTTP request.
+Response:
 
-### Pengujian
-Untuk menjalankan unit tests, gunakan perintah berikut:
+```text
+pong
+```
+
+## Menjalankan Proyek
+
+### Prasyarat
+
+- Go `1.22+`
+- Docker dan Docker Compose
+
+### Setup
+
+1. Clone repository:
+
+```bash
+git clone https://github.com/Kintamani/go-skeleton.git
+cd go-skeleton
+```
+
+2. Siapkan environment:
+
+```bash
+cp .env.example .env
+```
+
+3. Jalankan service:
+
+```bash
+docker compose up --build
+```
+
+Secara default aplikasi akan berjalan di `http://localhost:8181`.
+
+## Migration
+
+Migration bisa dijalankan langsung dengan `migrate` atau melalui `task`.
+
+Menjalankan migration:
+
+```bash
+docker compose exec skeleton-golang task migrate
+```
+
+Membuat migration dengan sequence number:
+
+```bash
+docker compose exec skeleton-golang task create-migration-sequence name=create_examples_table
+```
+
+Membuat migration dengan timestamp:
+
+```bash
+docker compose exec skeleton-golang task create-migration-datetime name=create_examples_table
+```
+
+Detail tambahan ada di [databases/migrations/migration.md](databases/migrations/migration.md).
+
+## Seeder
+
+Seeder disiapkan di folder `databases/seeders`. Saat ini contoh seeder tersedia untuk tabel `examples`.
+
+## Testing
+
+Menjalankan seluruh test:
+
 ```bash
 go test ./...
 ```
 
-### Command Penggunaan
-* [Migration](databases/migrations/migration.md)
-* [Command](commands/command.md)
+## Catatan Arsitektur
 
-Ada kesalahan sintaksis dalam kueri, saya telah memperbaikinya untuk Anda. Berikut terjemahannya:
+Kalau dibandingkan dengan referensi seperti `khannedy/golang-clean-architecture`, repo itu lebih tegas dalam memisahkan delivery, use case, repository, dan gateway. Arah itu bagus, tetapi untuk repo ini lebih aman dilakukan bertahap:
 
-### Aturan Umum untuk Commit
-Pada projek menggunakan commit konvensional untuk menangani commit git : [Conventional Commits](https://www.conventionalcommits.org) 
-* Gunakan `feat: pesan commit` untuk melakukan commit git yang terkait dengan fitur.
-* Gunakan `refactor: pesan commit` untuk melakukan commit git yang terkait dengan refactoring kode.
-* Gunakan `fix: pesan commit` untuk melakukan commit git yang terkait dengan perbaikan bug.
-* Gunakan `test: pesan commit` untuk melakukan commit git yang terkait dengan file test.
-* Gunakan `docs: pesan commit` untuk melakukan commit git yang terkait dengan dokumentasi (termasuk file README.md).
-* Gunakan `style: pesan commit` untuk melakukan commit git yang terkait dengan gaya kode.
+- pertahankan folder yang sudah aktif dipakai
+- rapikan naming agar konsisten
+- pisahkan use case dan infrastructure saat kebutuhan bisnis mulai nyata
+- hindari menambahkan banyak folder kosong hanya demi terlihat "clean architecture"
 
+## Commit Convention
 
-### Pengembangan
-Jika Anda ingin mengembangkan lebih lanjut, pastikan untuk selalu menjaga pemisahan tanggung jawab antara layer-layer dalam arsitektur. Setiap penambahan fitur baru harus mengikuti struktur yang sudah ditentukan untuk menjaga kode tetap bersih dan mudah dimaintain.
+Proyek ini mengikuti [Conventional Commits](https://www.conventionalcommits.org/).
 
-### Kontribusi
-Jika Anda ingin berkontribusi dalam pengembangan proyek ini, silakan fork repository ini dan buat pull request dengan perubahan yang Anda usulkan.
+- `feat:` untuk fitur baru
+- `fix:` untuk perbaikan bug
+- `refactor:` untuk perubahan struktur internal
+- `test:` untuk test
+- `docs:` untuk dokumentasi
+- `style:` untuk perubahan formatting/gaya
 
-### Lisensi
-Proyek ini dilisensikan di bawah [MIT](./LICENSE) License.
+## Lisensi
+
+Proyek ini menggunakan lisensi [MIT](./LICENSE).
