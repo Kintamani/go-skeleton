@@ -20,24 +20,32 @@ Struktur proyek ini masih berupa skeleton yang terus disederhanakan dan dirapika
 ```text
 .
 ├── cmd/
-│   └── web/               # Entry point aplikasi HTTP
-├── config/                # Loader environment dan konfigurasi aplikasi
-├── databases/
+│   ├── api/               # Entry point aplikasi HTTP
+│   ├── scheduler/         # Placeholder executable untuk scheduler
+│   ├── seed/              # Executable untuk menjalankan seed
+│   └── worker/            # Placeholder executable untuk background worker
+├── db/
 │   ├── migrations/        # File migration SQL
 │   └── seeders/           # Seeder database
-├── docker/
-│   └── configs/           # Dockerfile untuk Go app dan PostgreSQL
+├── deployments/
+│   ├── docker/            # Dockerfile dan bootstrap container
+│   ├── helm/              # Placeholder chart Helm
+│   ├── kubernetes/        # Placeholder manifest Kubernetes
+│   └── terraform/         # Placeholder infrastructure as code
 ├── docs/
 │   └── swagger/           # Dokumen Swagger/OpenAPI dasar
 ├── internal/
 │   ├── app/               # Wiring dependency aplikasi
-│   ├── delivery/          # Delivery layer, route, handler, HTTP response
+│   ├── config/            # Loader environment dan konfigurasi aplikasi
+│   ├── delivery/          # HTTP, gRPC, websocket, dan worker delivery
 │   ├── entity/            # Entity domain
-│   ├── infrastructure/    # Implementasi framework, DB, logger, repository
-│   ├── model/             # DTO untuk output/input use case
-│   ├── repository/        # Kontrak repository
+│   ├── infrastructure/    # Implementasi framework, DB, logger, queue, redis
+│   ├── mapper/            # Placeholder mapper lintas layer
+│   ├── model/             # Model input/output use case yang aktif dipakai
+│   ├── repository/        # Repository contract dan implementasi aktif
 │   └── usecase/           # Business use case
-├── hotreload/             # Output binary hot reload
+├── pkg/                   # Placeholder shared package
+├── scripts/               # Placeholder helper scripts
 ├── docker-compose.yml
 └── taskfile.yml           # Shortcut task untuk migration
 ```
@@ -46,7 +54,7 @@ Struktur proyek ini masih berupa skeleton yang terus disederhanakan dan dirapika
 
 Alur request saat ini sederhana:
 
-1. `cmd/web/main.go` memuat environment dan menjalankan aplikasi.
+1. `cmd/api/main.go` memuat environment dan menjalankan executable API.
 2. `internal/app/web.go` melakukan wiring dependency aplikasi.
 3. `internal/delivery/http/route/route.go` mendaftarkan route.
 4. Handler memanggil use case.
@@ -96,6 +104,8 @@ docker compose up --build
 
 Secara default aplikasi akan berjalan di `http://localhost:8181`.
 
+File `docker-compose.yml` tetap berada di root agar workflow local development tetap sederhana, sedangkan Dockerfile dan bootstrap container disimpan di `deployments/docker`.
+
 ## Migration
 
 Migration bisa dijalankan langsung dengan `migrate` atau melalui `task`.
@@ -118,11 +128,46 @@ Membuat migration dengan timestamp:
 docker compose exec skeleton-golang task create-migration-datetime name=create_examples_table
 ```
 
-Detail tambahan ada di [databases/migrations/migration.md](databases/migrations/migration.md).
+Detail tambahan ada di [db/migrations/migration.md](/Users/camel/Projects/Go/go-skeleton/db/migrations/migration.md).
+
+Contoh file migration yang bisa dijadikan acuan:
+
+- `202605210001_create_roles.up.sql`
+- `202605210002_create_users.up.sql`
 
 ## Seeder
 
-Seeder disiapkan di folder `databases/seeders`. Saat ini contoh seeder tersedia untuk tabel `examples`.
+Seeder disiapkan di folder `db/seeders/`. Contoh yang saat ini tersedia:
+
+- `example_seeder.go`
+- `role_seeder.go`
+- `admin_seeder.go`
+
+Menjalankan example seeder:
+
+```bash
+go run ./cmd/seed -seed example -total 10
+```
+
+Menjalankan role seeder:
+
+```bash
+go run ./cmd/seed -seed role
+```
+
+Menjalankan admin seeder:
+
+```bash
+go run ./cmd/seed -seed admin
+```
+
+`admin` seeder akan memastikan role dasar tersedia lebih dulu, jadi aman dijalankan langsung pada database kosong.
+
+Mengosongkan data example:
+
+```bash
+go run ./cmd/seed -seed clear-example
+```
 
 ## Testing
 
@@ -137,10 +182,14 @@ go test ./...
 Struktur repo ini sekarang sudah lebih dekat dengan referensi `khannedy/golang-clean-architecture`:
 
 - entry point dipindah ke `cmd/`
+- scaffold executable lain sudah disiapkan di `cmd/` untuk base project
 - business flow dipusatkan ke `internal/usecase`
-- kontrak repository dipisah dari implementasinya
+- `internal/config/` menjadi satu-satunya lokasi config aktif
+- `internal/model/` dipakai untuk model input/output use case yang aktif
+- repository sekarang disederhanakan di satu area `internal/repository`
 - HTTP handler hanya menangani delivery concern
 - implementasi DB, logger, dan HTTP server ada di `internal/infrastructure`
+- file output build dan cache development tidak lagi menjadi bagian struktur source
 
 Masih ada ruang pengembangan, misalnya:
 

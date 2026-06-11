@@ -2,7 +2,8 @@ package usecase
 
 import (
 	"context"
-	"skeleton-services/internal/model"
+
+	"github.com/Kintamani/go-skeleton/internal/model"
 )
 
 type HealthUseCase interface {

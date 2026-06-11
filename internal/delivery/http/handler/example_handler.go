@@ -2,8 +2,8 @@ package handler
 
 import (
 	"net/http"
-	"skeleton-services/internal/delivery/http/response"
-	"skeleton-services/internal/usecase"
+	"github.com/Kintamani/go-skeleton/internal/delivery/http/response"
+	"github.com/Kintamani/go-skeleton/internal/usecase"
 
 	"github.com/labstack/echo/v4"
 )

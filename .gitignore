@@ -8,6 +8,7 @@ bin/
 # File yang dihasilkan oleh Go
 vendor/
 .cache/
+hotreload/
 
 # Direktori dan file dari IDE
 .idea/
@@ -22,5 +23,5 @@ vendor/
 /build/
 
 # Direktori dan file Docker
-docker/configs/postgres/data/
-docker/configs/init.sql
+deployments/docker/postgres/data/
+deployments/docker/init.sql

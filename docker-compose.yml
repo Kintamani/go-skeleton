@@ -8,7 +8,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./docker/configs/postgres/Dockerfile
+      dockerfile: ./deployments/docker/postgres/Dockerfile
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -32,7 +32,7 @@ services:
     container_name: skeleton-golang
     build:
       context: .
-      dockerfile: ./docker/configs/go/Dockerfile
+      dockerfile: ./deployments/docker/go/Dockerfile
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}

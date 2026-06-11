@@ -1,7 +1,7 @@
 package httpserver
 
 import (
-	"skeleton-services/internal/delivery/http/response"
+	"github.com/Kintamani/go-skeleton/internal/delivery/http/response"
 
 	"github.com/labstack/echo/v4"
 )

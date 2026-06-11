@@ -2,8 +2,9 @@ package usecase
 
 import (
 	"context"
-	"skeleton-services/internal/model"
-	"skeleton-services/internal/repository"
+
+	"github.com/Kintamani/go-skeleton/internal/model"
+	"github.com/Kintamani/go-skeleton/internal/repository"
 )
 
 type ExampleUseCase interface {

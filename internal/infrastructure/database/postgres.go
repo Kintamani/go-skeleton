@@ -2,9 +2,9 @@ package database
 
 import (
 	"fmt"
-	"skeleton-services/config"
 	"time"
 
+	"github.com/Kintamani/go-skeleton/internal/config"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"

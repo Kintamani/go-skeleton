@@ -1,0 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE USER postgres WITH PASSWORD 'postgres';
+
+GRANT ALL PRIVILEGES ON DATABASE postgres TO postgres;

@@ -1,7 +1,7 @@
 package route
 
 import (
-	"skeleton-services/internal/delivery/http/handler"
+	"github.com/Kintamani/go-skeleton/internal/delivery/http/handler"
 
 	"github.com/labstack/echo/v4"
 )

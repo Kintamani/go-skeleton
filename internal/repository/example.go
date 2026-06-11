@@ -2,7 +2,8 @@ package repository
 
 import (
 	"context"
-	"skeleton-services/internal/entity"
+
+	"github.com/Kintamani/go-skeleton/internal/entity"
 )
 
 type ExampleRepository interface {

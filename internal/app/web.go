@@ -1,14 +1,14 @@
 package app
 
 import (
-	"skeleton-services/config"
-	"skeleton-services/internal/delivery/http/handler"
-	"skeleton-services/internal/delivery/http/route"
-	"skeleton-services/internal/infrastructure/database"
-	httpserver "skeleton-services/internal/infrastructure/http"
-	"skeleton-services/internal/infrastructure/logger"
-	"skeleton-services/internal/infrastructure/persistence"
-	"skeleton-services/internal/usecase"
+	"github.com/Kintamani/go-skeleton/internal/config"
+	"github.com/Kintamani/go-skeleton/internal/delivery/http/handler"
+	"github.com/Kintamani/go-skeleton/internal/delivery/http/route"
+	"github.com/Kintamani/go-skeleton/internal/infrastructure/database"
+	httpserver "github.com/Kintamani/go-skeleton/internal/infrastructure/http"
+	"github.com/Kintamani/go-skeleton/internal/infrastructure/logger"
+	"github.com/Kintamani/go-skeleton/internal/repository"
+	"github.com/Kintamani/go-skeleton/internal/usecase"
 )
 
 func RunHTTP() {
@@ -17,7 +17,7 @@ func RunHTTP() {
 	db := database.New(log)
 
 	healthUseCase := usecase.NewHealthUseCase()
-	exampleRepository := persistence.NewExampleRepository(db)
+	exampleRepository := repository.NewExampleRepository(db)
 	exampleUseCase := usecase.NewExampleUseCase(exampleRepository)
 
 	routeConfig := route.Config{
