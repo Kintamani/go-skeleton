@@ -28,10 +28,8 @@ func New(log *logrus.Logger) *sqlx.DB {
 
 	db.SetMaxOpenConns(config.ENV.DB.MaxOpenCons)
 	db.SetMaxIdleConns(config.ENV.DB.MaxIdleCons)
-	db.SetConnMaxLifetime(time.Duration(config.ENV.DB.ConnMaxLifetime) * time.Second)
-
-	if err := db.Ping(); err != nil {
-		log.WithError(err).Fatal("failed to ping database")
+	if config.ENV.DB.ConnMaxLifetime > 0 {
+		db.SetConnMaxLifetime(time.Duration(config.ENV.DB.ConnMaxLifetime) * time.Second)
 	}
 
 	return db

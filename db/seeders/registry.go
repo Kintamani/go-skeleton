@@ -12,16 +12,15 @@ type AppSeeder struct {
 	log *logrus.Logger
 }
 
-func NewSeeder(db *sqlx.DB) *AppSeeder {
+func NewSeeder(db *sqlx.DB, log *logrus.Logger) *AppSeeder {
 	return &AppSeeder{
 		db:  db,
-		log: logrus.New(),
+		log: log,
 	}
 }
 
 func Execute(db *sqlx.DB, log *logrus.Logger, seed string, total int) {
-	seeder := NewSeeder(db)
-	seeder.log = log
+	seeder := NewSeeder(db, log)
 	seeder.run(seed, total)
 }
 
@@ -47,15 +46,11 @@ func (s *AppSeeder) clearExampleSeed() {
 		return
 	}
 
+	committed := false
 	defer func() {
-		if err != nil {
-			err = tx.Rollback()
-			s.log.WithError(err).Error("failed to rollback transaction")
-			return
-		} else {
-			err = tx.Commit()
-			if err != nil {
-				s.log.WithError(err).Error("failed to commit transaction")
+		if !committed {
+			if rbErr := tx.Rollback(); rbErr != nil {
+				s.log.WithError(rbErr).Error("failed to rollback transaction")
 			}
 		}
 	}()
@@ -65,6 +60,12 @@ func (s *AppSeeder) clearExampleSeed() {
 		s.log.WithError(err).Error("failed to delete examples")
 		return
 	}
+
+	if err = tx.Commit(); err != nil {
+		s.log.WithError(err).Error("failed to commit transaction")
+		return
+	}
+	committed = true
 
 	s.log.Info("examples table cleared successfully")
 }
