@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/Kintamani/go-skeleton/db/seeders"
 	"github.com/Kintamani/go-skeleton/internal/config"
 	"github.com/Kintamani/go-skeleton/internal/infrastructure/database"
@@ -9,10 +10,7 @@ import (
 )
 
 func init() {
-	config.ConfigEnv(
-		config.WithPath("./"),
-		config.WithFilename(".env"),
-	).Initialize()
+	config.Load()
 }
 
 func main() {

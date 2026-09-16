@@ -6,10 +6,7 @@ import (
 )
 
 func init() {
-	config.ConfigEnv(
-		config.WithPath("./"),
-		config.WithFilename(".env"),
-	).Initialize()
+	config.Load()
 }
 
 func main() {

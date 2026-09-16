@@ -3,7 +3,7 @@ package config
 import (
 	"sync"
 
-	"github.com/sirupsen/logrus"
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 var (
@@ -33,55 +33,17 @@ type Config struct {
 	}
 }
 
-// option adalah fungsi yang digunakan untuk mengatur konfigurasi aplikasi
-type Option = func(c *Configure) error
-
-// configure mengatur data struct
-type Configure struct {
-	path     string
-	filename string
-}
-
-// ConfigEnv mengatur konfigurasi aplikasi
-func ConfigEnv(opt ...Option) *Configure {
-	c := &Configure{}
-
-	for _, o := range opt {
-		err := o(c)
-		if err != nil {
-			panic(err)
-		}
-	}
-	return c
-}
-
-// initialize akan membuat konfigurasi aplikasi
-func (c *Configure) Initialize() {
-	logger := logrus.New()
+// Load loads configuration from optional env file path or environment variables.
+func Load(path ...string) *Config {
 	once.Do(func() {
 		ENV = &Config{}
-		if err := LoadEnv(Options{
-			Config:    ENV,
-			Paths:     []string{c.path},
-			Filenames: []string{c.filename},
-		}); err != nil {
-			logger.Warn("Warning: env file does not exist")
+		filePath := ".env"
+		if len(path) > 0 && path[0] != "" {
+			filePath = path[0]
+		}
+		if err := cleanenv.ReadConfig(filePath, ENV); err != nil {
+			_ = cleanenv.ReadEnv(ENV)
 		}
 	})
-}
-
-// withPath akan menambahkan path untuk mengatur konfigurasi aplikasi
-func WithPath(path string) Option {
-	return func(c *Configure) error {
-		c.path = path
-		return nil
-	}
-}
-
-// WithFilename akan menambahkan filename untuk mengatur konfigurasi aplikasi
-func WithFilename(filename string) Option {
-	return func(c *Configure) error {
-		c.filename = filename
-		return nil
-	}
+	return ENV
 }
