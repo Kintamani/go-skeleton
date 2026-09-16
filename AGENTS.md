@@ -1,228 +1,152 @@
-# Repository Instructions
+# Agent Instructions
 
-## Repository Purpose
+## Repository
 
-This repository is a reusable Go project skeleton.
+This repository is a reusable Go project skeleton for backend/API projects.
 
-It is intentionally designed to serve as the starting point for new projects.
+It is a starting point for new projects, not a finished application.
 
-Architectural directories may exist as placeholders even when they are currently empty.
+## Core Rules
 
-Do not remove an empty directory solely because it has no current implementation if it represents a documented extension point of the skeleton.
+- Inspect the existing repository before making changes.
+- Understand the requirement before implementing it.
+- Reuse existing code, patterns, and dependencies.
+- Prefer simple and idiomatic Go solutions.
+- Prefer the standard library when it is sufficient.
+- Avoid unnecessary abstractions, interfaces, wrappers, and dependencies.
+- Do not implement speculative features.
+- Do not modify unrelated files.
+- Preserve existing behavior unless the task requires changing it.
 
-However, do not add speculative implementations, abstractions, interfaces, dependencies, or configuration merely to populate placeholder directories.
+## Rules
 
-## Core Engineering Principles
+Read only the rules relevant to the current task.
 
-This repository follows the Ponytail minimalism principles defined in:
+### Architecture
 
-`.agents/rules/ponytail/ponytail.md`
+`.agents/rules/architecture.md`
 
-Ponytail is the default engineering philosophy for this repository.
+Use when creating, moving, or refactoring packages, changing dependencies between layers, or making architectural decisions.
 
-Before implementing changes:
+Related skill:
 
-1. Understand the actual requirement.
-2. Inspect the existing codebase before creating new code.
-3. Reuse existing implementations and patterns whenever possible.
-4. Prefer the Go standard library when it is sufficient.
-5. Prefer existing dependencies over introducing new dependencies.
-6. Avoid abstractions without a concrete use case.
-7. Avoid interfaces when there is only one implementation and no meaningful substitution requirement.
-8. Keep implementations small and focused.
-9. Delete unnecessary code before adding new code when appropriate.
-10. Do not introduce architectural complexity merely for future possibilities.
+`golang-architecture`
+`golang-code-quality`
 
-Do not blindly apply these principles if they conflict with an explicit project requirement.
+### Dependencies
 
----
+`.agents/rules/dependencies.md`
 
-## Architecture & Code Organization
+Use when adding, removing, upgrading, or replacing dependencies.
 
-This repository is a Go REST API skeleton loosely structured around Clean Architecture principles.
+Related skill:
 
-### `cmd/`
+`golang-dependencies`
 
-Application entry points.
+### Logging
 
-- `cmd/api/main.go` — HTTP API server.
-- `cmd/seed/main.go` — database seeding.
+`.agents/rules/logging.md`
 
-### `internal/app/`
+Use when modifying logging, log output, log configuration, or observability-related behavior.
 
-Application bootstrap and dependency wiring.
+Related skill:
 
-- `web.go` — HTTP application initialization.
+`golang-observability`
 
-### `internal/delivery/http/`
+### HTTP
 
-HTTP delivery layer.
+`.agents/rules/http.md`
 
-- `route/` — HTTP routing.
-- `handler/` — HTTP handlers/controllers.
-- `response/` — HTTP response helpers.
+Use when creating or modifying HTTP endpoints, handlers, middleware, routing, or HTTP responses.
 
-Handlers should focus on HTTP delivery concerns and delegate business logic to use cases.
+Related skills:
 
-### `internal/usecase/`
+`golang-api-documentation`
 
-Business logic and orchestration.
+### Configuration
 
-Use cases coordinate application behavior and interact with repository contracts when persistence is required.
+`.agents/rules/configuration.md`
 
-Do not create a use-case interface automatically. Prefer concrete implementations unless abstraction is required by the project.
+Use when modifying application configuration, environment variables, configuration loading, or configuration defaults.
 
-### `internal/repository/`
+### Database
 
-Repository contracts and data-access implementations.
+`.agents/rules/database.md`
 
-Prefer the simplest repository structure that satisfies the current requirements.
+Use when modifying database access, repositories, migrations, seeders, queries, or database configuration.
 
-Do not create repository interfaces solely because they are commonly used in Clean Architecture.
+Related skill:
 
-### `internal/infrastructure/`
+`golang-database`
 
-Concrete infrastructure adapters.
+### Testing
 
-Examples include:
+`.agents/rules/testing.md`
 
-- database connections
-- Echo setup
-- logging
-- external infrastructure integrations
+Use when creating or modifying tests, test infrastructure, benchmarks, or test strategy.
 
-Infrastructure-specific concerns should remain in this layer.
+Related skills:
 
-### `internal/model/`
+`golang-testing`
 
-DTOs and request/response models.
+### Development Workflow
 
-### `internal/entity/`
+`.agents/rules/development-workflow.md`
 
-Core domain entities.
+Use when planning or executing development tasks, especially when deciding how to inspect, modify, and validate the repository.
 
-### `internal/config/`
+### Git
 
-Configuration loading and environment variable mapping.
+`.agents/rules/git.md`
 
-Prefer simple configuration loading over unnecessary configuration abstractions.
+Use when creating commits, modifying branches, inspecting Git state, or performing Git operations.
 
-### `db/migrations/`
+## Skeleton
 
-Database SQL migrations.
+This repository is a reusable project skeleton.
 
-### `db/seeders/`
+Some directories may intentionally exist as extension points even when they are currently empty.
 
-Database seeders.
+Do not:
 
----
+- remove intentional extension points merely because they are unused;
+- add fake implementations to empty directories;
+- add speculative infrastructure;
+- add unused interfaces or dependencies.
 
-## Go Development Conventions
+## Skills
 
-- Write idiomatic Go.
-- Prefer simple code over unnecessary abstraction.
-- Keep functions small and focused.
-- Prefer composition over unnecessary inheritance-like abstractions.
-- Avoid unnecessary interfaces.
-- Avoid unnecessary wrapper types and wrapper packages.
-- Avoid adding dependencies unless there is a concrete reason.
-- Prefer standard library functionality when sufficient.
-- Follow existing project conventions before introducing a new pattern.
-- Do not refactor unrelated code while implementing a feature.
+Use relevant skills from `.agents/skills/*` when specialized knowledge is required.
 
----
+Prefer existing skills instead of duplicating their instructions in repository rules.
 
-## Development Workflow
+Use only the skills relevant to the current task.
 
-Before modifying code:
+## Ponytail
 
-1. Inspect the relevant repository structure.
-2. Read `go.mod`.
-3. Locate existing implementations related to the requested change.
-4. Check existing utilities, services, handlers, repositories, and tests.
-5. Determine whether the requested functionality already exists.
-6. Identify the smallest appropriate change.
+Follow:
 
-After modifying code:
+`.agents/rules/ponytail.md`
 
-1. Run `gofmt` on modified Go files.
-2. Run relevant tests.
-3. Run `go test ./...` when appropriate.
-4. Review the diff.
-5. Remove unnecessary changes before finishing.
+Ponytail identifies unnecessary complexity and encourages minimal implementations.
 
-Do not modify unrelated files.
+Evaluate Ponytail recommendations against the purpose of this reusable skeleton.
 
----
+Do not blindly remove intentional architecture or extension points.
 
-## Testing
+## Change Scope
 
-Tests should verify behavior rather than implementation details.
+Keep changes focused on the requested task.
 
-Prefer:
+Do not perform unrelated refactoring.
 
-- table-driven tests when they improve clarity
-- focused unit tests
-- integration tests where integration behavior is important
+If a separate improvement is discovered, mention it instead of implementing it automatically.
 
-Do not create mocks, interfaces, or test abstractions unless they provide a concrete benefit.
+## Validation
 
----
+Before completing a task:
 
-## Database Migrations
-
-Follow the existing migration conventions in:
-
-`db/migrations/`
-
-Use the commands defined in `taskfile.yml`.
-
-Examples:
-
-```bash
-task migrate
-task create-migration-sequence name=<name>
-```
-
-Do not manually modify existing migrations unless explicitly required.
-
-## Dependencies
-
-Before adding a dependency:
-
-- Check whether the Go standard library provides the required functionality.
-- Check whether an existing project dependency already provides it.
-- Consider whether a small local implementation is simpler.
-- Add a dependency only when it provides a meaningful benefit.
-
-Avoid dependencies for trivial functionality.
-
-## Git & Commits
-
-Follow Conventional Commits:
-
-``` bash
-feat:
-fix:
-refactor:
-test:
-docs:
-style:
-chore:
-```
-
-Keep commits focused and avoid unrelated changes.
-
-## Agent Behavior
-
-When a task appears larger than necessary:
-
-- question unnecessary requirements
-- inspect existing code before creating new abstractions
-- prefer deletion or simplification where appropriate
-- explain important architectural trade-offs briefly
-- do not implement speculative functionality
-
-When Ponytail identifies an opportunity to simplify code, treat it as a recommendation to evaluate, not an automatic instruction to delete code.
-
-Preserve behavior and existing contracts unless the requested change explicitly requires otherwise.
+- format modified Go code;
+- run relevant tests;
+- inspect the final diff;
+- confirm no unnecessary changes were introduced.
