@@ -1,6 +1,7 @@
 package response
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -24,15 +25,25 @@ func JSON(c echo.Context, status int, message string, data any) error {
 }
 
 func HTTPErrorHandler(err error, c echo.Context) {
-	httpError, ok := err.(*echo.HTTPError)
-	if !ok {
-		httpError = echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	if c.Response().Committed {
+		return
 	}
 
-	c.Logger().Error(httpError.Message)
-	_ = c.JSON(httpError.Code, Envelope{
+	code := http.StatusInternalServerError
+	message := "Internal Server Error"
+
+	var httpError *echo.HTTPError
+	if errors.As(err, &httpError) {
+		code = httpError.Code
+		message = fmt.Sprint(httpError.Message)
+	} else if err != nil {
+		message = err.Error()
+	}
+
+	c.Logger().Error(err)
+	_ = c.JSON(code, Envelope{
 		Success: false,
-		Status:  httpError.Code,
-		Message: fmt.Sprint(httpError.Message),
+		Status:  code,
+		Message: message,
 	})
 }
