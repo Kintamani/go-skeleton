@@ -6,17 +6,13 @@ import (
 	"github.com/Kintamani/go-skeleton/internal/model"
 )
 
-type HealthUseCase interface {
-	Ping(ctx context.Context) model.HealthCheckResponse
+type HealthUseCase struct{}
+
+func NewHealthUseCase() *HealthUseCase {
+	return &HealthUseCase{}
 }
 
-type healthUseCase struct{}
-
-func NewHealthUseCase() HealthUseCase {
-	return &healthUseCase{}
-}
-
-func (u *healthUseCase) Ping(_ context.Context) model.HealthCheckResponse {
+func (u *HealthUseCase) Ping(_ context.Context) model.HealthCheckResponse {
 	return model.HealthCheckResponse{
 		Message: "pong",
 	}

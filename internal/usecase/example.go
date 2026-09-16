@@ -7,19 +7,15 @@ import (
 	"github.com/Kintamani/go-skeleton/internal/repository"
 )
 
-type ExampleUseCase interface {
-	FindAll(ctx context.Context) ([]model.ExampleResponse, error)
+type ExampleUseCase struct {
+	exampleRepository *repository.ExampleRepository
 }
 
-type exampleUseCase struct {
-	exampleRepository repository.ExampleRepository
+func NewExampleUseCase(exampleRepository *repository.ExampleRepository) *ExampleUseCase {
+	return &ExampleUseCase{exampleRepository: exampleRepository}
 }
 
-func NewExampleUseCase(exampleRepository repository.ExampleRepository) ExampleUseCase {
-	return &exampleUseCase{exampleRepository: exampleRepository}
-}
-
-func (u *exampleUseCase) FindAll(ctx context.Context) ([]model.ExampleResponse, error) {
+func (u *ExampleUseCase) FindAll(ctx context.Context) ([]model.ExampleResponse, error) {
 	examples, err := u.exampleRepository.FindAll(ctx)
 	if err != nil {
 		return nil, err
