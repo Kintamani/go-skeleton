@@ -35,7 +35,7 @@ func RunHTTP() {
 	}
 	routeConfig.Setup()
 
-	if err := app.Start(":" + config.ENV.App.Port); err != nil {
+	if err := app.Start(":" + config.ENV.App.PortHTTP); err != nil {
 		log.Error("failed to start http server", "error", err)
 		os.Exit(1)
 	}

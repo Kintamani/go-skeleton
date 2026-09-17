@@ -14,7 +14,7 @@ var (
 type Config struct {
 	App struct {
 		Name        string `env:"APP_NAME" env-default:"skeleton"`
-		Port        string `env:"APP_PORT" env-default:"8181"`
+		PortHTTP    string `env:"APP_PORT_HTTP" env-default:"8181"`
 		Host        string `env:"APP_HOST" env-default:"127.0.0.1"`
 		Environment string `env:"APP_ENV" env-default:"development"`
 	}

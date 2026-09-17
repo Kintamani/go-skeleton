@@ -41,7 +41,7 @@ services:
       - GO111MODULE=on 
       - GOPATH=/go      
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - ${APP_PORT_HTTP}:${APP_PORT_HTTP}
     volumes:
       - type: bind
         source: .
