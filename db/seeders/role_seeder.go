@@ -14,9 +14,9 @@ func (s *AppSeeder) roleSeed() {
 
 	_, err := s.db.NamedExec(query, args)
 	if err != nil {
-		s.log.WithError(err).Error("failed to seed roles")
+		s.log.Error("failed to seed roles", "error", err)
 		return
 	}
 
-	s.log.WithField("total", len(args)).Info("roles table seeded successfully")
+	s.log.Info("roles table seeded successfully", "total", len(args))
 }

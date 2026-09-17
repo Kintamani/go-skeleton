@@ -8,13 +8,13 @@ func (s *AppSeeder) adminSeed() {
 	var roleID int64
 	err := s.db.Get(&roleID, `SELECT id FROM roles WHERE name = $1 LIMIT 1`, "admin")
 	if err != nil {
-		s.log.WithError(err).Error("failed to find admin role")
+		s.log.Error("failed to find admin role", "error", err)
 		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
 	if err != nil {
-		s.log.WithError(err).Error("failed to hash admin password")
+		s.log.Error("failed to hash admin password", "error", err)
 		return
 	}
 
@@ -33,9 +33,9 @@ func (s *AppSeeder) adminSeed() {
 
 	_, err = s.db.NamedExec(query, args)
 	if err != nil {
-		s.log.WithError(err).Error("failed to seed admin user")
+		s.log.Error("failed to seed admin user", "error", err)
 		return
 	}
 
-	s.log.WithField("email", "admin@example.com").Info("admin user seeded successfully")
+	s.log.Info("admin user seeded successfully", "email", "admin@example.com")
 }

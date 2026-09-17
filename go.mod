@@ -3,12 +3,10 @@ module github.com/Kintamani/go-skeleton
 go 1.25.6
 
 require (
-	github.com/brianvoe/gofakeit/v7 v7.15.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/labstack/echo/v4 v4.15.2
 	github.com/lib/pq v1.12.3
-	github.com/sirupsen/logrus v1.9.4
 	golang.org/x/crypto v0.52.0
 )
 

@@ -1,33 +1,19 @@
 package logger
 
 import (
+	"log/slog"
 	"os"
-	"runtime"
-	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
-func New(environment string) *logrus.Logger {
-	log := logrus.New()
-	log.SetOutput(os.Stdout)
-
-	log.SetFormatter(&logrus.TextFormatter{
-		FullTimestamp:   true,
-		TimestampFormat: time.RFC1123Z,
-	})
-
+func New(environment string) *slog.Logger {
+	level := slog.LevelDebug
 	if environment == "production" {
-		log.SetLevel(logrus.WarnLevel)
-	} else {
-		log.SetLevel(logrus.DebugLevel)
+		level = slog.LevelWarn
 	}
 
-	log.WithFields(logrus.Fields{
-		"runtime_version": runtime.Version(),
-		"cpu_count":       runtime.NumCPU(),
-		"architecture":    runtime.GOARCH,
-	}).Info("application initializing")
+	handler := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: level,
+	})
 
-	return log
+	return slog.New(handler)
 }

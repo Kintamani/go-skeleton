@@ -1,36 +1,24 @@
 package seeders
 
-import (
-	"github.com/brianvoe/gofakeit/v7"
-)
+import "fmt"
 
 func (s *AppSeeder) exampleSeed(total int) {
 	if total <= 0 {
 		total = 10
 	}
 
-	gofakeit.Seed(0)
-
-	var (
-		args  = make([]map[string]any, 0)
-		query = "INSERT INTO examples (name) VALUES (:name)"
-	)
-
+	args := make([]map[string]any, total)
 	for i := 0; i < total; i++ {
-		var (
-			name = gofakeit.ProductCategory()
-			arg  = make(map[string]any)
-		)
-
-		arg["name"] = name
-		args = append(args, arg)
+		args[i] = map[string]any{
+			"name": fmt.Sprintf("Example Item %d", i+1),
+		}
 	}
 
-	_, err := s.db.NamedExec(query, args)
+	_, err := s.db.NamedExec("INSERT INTO examples (name) VALUES (:name)", args)
 	if err != nil {
-		s.log.WithError(err).Error("failed to seed examples")
+		s.log.Error("failed to seed examples", "error", err)
 		return
 	}
 
-	s.log.WithField("total", len(args)).Info("examples table seeded successfully")
+	s.log.Info("examples table seeded successfully", "total", len(args))
 }

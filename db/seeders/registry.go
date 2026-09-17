@@ -2,24 +2,24 @@ package seeders
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/sirupsen/logrus"
 )
 
 type AppSeeder struct {
 	db  *sqlx.DB
-	log *logrus.Logger
+	log *slog.Logger
 }
 
-func NewSeeder(db *sqlx.DB, log *logrus.Logger) *AppSeeder {
+func NewSeeder(db *sqlx.DB, log *slog.Logger) *AppSeeder {
 	return &AppSeeder{
 		db:  db,
 		log: log,
 	}
 }
 
-func Execute(db *sqlx.DB, log *logrus.Logger, seed string, total int) {
+func Execute(db *sqlx.DB, log *slog.Logger, seed string, total int) {
 	seeder := NewSeeder(db, log)
 	seeder.run(seed, total)
 }
@@ -35,14 +35,14 @@ func (s *AppSeeder) run(seed string, total int) {
 	case "clear-example":
 		s.clearExampleSeed()
 	default:
-		s.log.WithField("seed", seed).Warn("no seed to run")
+		s.log.Warn("no seed to run", "seed", seed)
 	}
 }
 
 func (s *AppSeeder) clearExampleSeed() {
 	tx, err := s.db.BeginTxx(context.Background(), nil)
 	if err != nil {
-		s.log.WithError(err).Error("failed to start transaction")
+		s.log.Error("failed to start transaction", "error", err)
 		return
 	}
 
@@ -50,19 +50,19 @@ func (s *AppSeeder) clearExampleSeed() {
 	defer func() {
 		if !committed {
 			if rbErr := tx.Rollback(); rbErr != nil {
-				s.log.WithError(rbErr).Error("failed to rollback transaction")
+				s.log.Error("failed to rollback transaction", "error", rbErr)
 			}
 		}
 	}()
 
 	_, err = tx.Exec(`DELETE FROM examples`)
 	if err != nil {
-		s.log.WithError(err).Error("failed to delete examples")
+		s.log.Error("failed to delete examples", "error", err)
 		return
 	}
 
 	if err = tx.Commit(); err != nil {
-		s.log.WithError(err).Error("failed to commit transaction")
+		s.log.Error("failed to commit transaction", "error", err)
 		return
 	}
 	committed = true

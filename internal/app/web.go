@@ -1,6 +1,8 @@
 package app
 
 import (
+	"os"
+
 	"github.com/Kintamani/go-skeleton/internal/config"
 	"github.com/Kintamani/go-skeleton/internal/delivery/http/handler"
 	"github.com/Kintamani/go-skeleton/internal/delivery/http/response"
@@ -23,18 +25,18 @@ func RunHTTP() {
 	app.HTTPErrorHandler = response.HTTPErrorHandler
 	app.Use(middleware.Recover())
 
-	healthUseCase := usecase.NewHealthUseCase()
 	exampleRepository := repository.NewExampleRepository(db)
 	exampleUseCase := usecase.NewExampleUseCase(exampleRepository)
 
 	routeConfig := route.Config{
 		App:            app.Group("/api"),
-		HealthHandler:  handler.NewHealthHandler(healthUseCase),
+		HealthHandler:  handler.NewHealthHandler(),
 		ExampleHandler: handler.NewExampleHandler(exampleUseCase),
 	}
 	routeConfig.Setup()
 
 	if err := app.Start(":" + config.ENV.App.Port); err != nil {
-		log.WithError(err).Fatal("failed to start http server")
+		log.Error("failed to start http server", "error", err)
+		os.Exit(1)
 	}
 }
