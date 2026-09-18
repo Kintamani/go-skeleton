@@ -42,6 +42,7 @@ services:
       - GOPATH=/go      
     ports:
       - ${APP_PORT_HTTP}:${APP_PORT_HTTP}
+      - ${APP_PORT_GRPC}:${APP_PORT_GRPC}
     volumes:
       - type: bind
         source: .

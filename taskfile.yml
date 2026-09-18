@@ -30,3 +30,10 @@ tasks:
     desc: create migration with sequence number
     cmds:
       -  migrate create -ext sql -dir db/migrations -seq {{.name}}
+
+  # generate protobuf
+  proto:
+    desc: generate protobuf files
+    cmds:
+      - PATH="$(go env GOPATH)/bin:$PATH" protoc --proto_path=. --go_out=. --go_opt=module=github.com/Kintamani/go-skeleton --go-grpc_out=. --go-grpc_opt=module=github.com/Kintamani/go-skeleton proto/example/v1/example.proto
+

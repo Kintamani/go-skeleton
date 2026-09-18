@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package example.v1;
+
+option go_package = "github.com/Kintamani/go-skeleton/internal/delivery/grpc/pb;pb";
+
+service ExampleService {
+  rpc FindAll (FindAllRequest) returns (FindAllResponse);
+}
+
+message Example {
+  int64 id = 1;
+  string name = 2;
+  string created_at = 3;
+}
+
+message FindAllRequest {}
+
+message FindAllResponse {
+  repeated Example data = 1;
+}
