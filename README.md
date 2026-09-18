@@ -47,15 +47,15 @@ Struktur proyek ini masih berupa skeleton yang terus disederhanakan dan dirapika
 ├── pkg/                   # Placeholder shared package
 ├── scripts/               # Placeholder helper scripts
 ├── docker-compose.yml
-└── taskfile.yml           # Shortcut task untuk migration
+└── Taskfile.yml           # Shortcut task untuk migration
 ```
 
 ## Alur Aplikasi
 
 Alur request saat ini sederhana:
 
-1. `cmd/api/main.go` memuat environment dan menjalankan executable API.
-2. `internal/app/web.go` melakukan wiring dependency aplikasi.
+1. `cmd/http/main.go` memuat environment dan menjalankan executable HTTP server (atau `cmd/grpc/main.go` untuk gRPC server).
+2. `internal/app/http.go` melakukan wiring dependency aplikasi HTTP.
 3. `internal/delivery/http/route/route.go` mendaftarkan route.
 4. Handler memanggil use case.
 5. Use case memanggil repository interface.
